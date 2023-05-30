@@ -69,6 +69,8 @@ class ImageManipulator:
         images = [np.array(frame) for frame in self.frames]
         imageio.mimsave(filepath, images, format='mp4')  # 50 milliseconds per frame
 
+    
+
 
 manipulator = ImageManipulator("imgs/zizek.jpeg")
 
