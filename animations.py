@@ -41,26 +41,28 @@ class ImageManipulator:
             self.frames.append(frame)
 
 
-    def pan_left_to_right(self, start_factor, end_factor, steps):
+    def pan_left_to_right(self, start, end, length, steps):
         width, height = self.image.size
-        for pan_factor in np.linspace(start_factor, end_factor, steps):
-            left = int(width * pan_factor)
-            top = 0
-            right = width
-            bottom = height
+        top = 0
+        bottom = height
+        for left in np.linspace(start, end-length, steps):
+            left = int(left)
+            right = left+length
             
             frame = self.image.crop((left, top, right, bottom))
+            #frame = frame.resize(self.original_size)  # Resize to original size
             self.frames.append(frame)
 
-    def pan_right_to_left(self, start_factor, end_factor, steps):
+    def pan_right_to_left(self, start, end, length, steps):
         width, height = self.image.size
-        for pan_factor in np.linspace(start_factor, end_factor, steps):
-            left = 0
-            top = 0
-            right = int(width * (1 - pan_factor))
-            bottom = height
+        top = 0
+        bottom = height
+        for right in np.linspace(end, start+length, steps):
+            right = int(right)
+            left = right-length
             
             frame = self.image.crop((left, top, right, bottom))
+            #frame = frame.resize(self.original_size)  # Resize to original size
             self.frames.append(frame)
 
     def save_gif(self, filepath):
@@ -68,14 +70,14 @@ class ImageManipulator:
         imageio.mimsave(filepath, images, format='mp4')  # 50 milliseconds per frame
 
 
-manipulator = ImageManipulator("zizek.jpeg")
+manipulator = ImageManipulator("imgs/zizek.jpeg")
 
 # Apply operations
 #manipulator.zoom_in(1, 2, 50)  # Zoom in gradually from factor 1 to 2, over 50 frames
-#manipulator.pan_left_to_right(0, 0.5, 50)  # Pan from left to right gradually, over 50 frames
-#manipulator.pan_right_to_left(0, 0.5, 50)  # Pan from right to left gradually, over 50 frames
-manipulator.zoom_out(0.25, 1.0, 50)  # Zoom out gradually from factor 1 to 0.5, over 50 frames
-manipulator.zoom_in(1.0, 2, 50)  # Zoom in gradually from factor 0.5 to 1, over 50 frames
+#manipulator.pan_left_to_right(0, manipulator.image.size[1], 400, 100)  # Pan from left to right gradually, over 50 frames
+manipulator.pan_right_to_left(0, manipulator.image.size[1], 300, 100)  # Pan from right to left gradually, over 50 frames
+#manipulator.zoom_out(0.25, 1.0, 50)  # Zoom out gradually from factor 1 to 0.5, over 50 frames
+#manipulator.zoom_in(1.0, 2, 50)  # Zoom in gradually from factor 0.5 to 1, over 50 frames
 
 # Save as GIF
-manipulator.save_gif("animations/output.mp4")
+manipulator.save_gif("outputs/output.mp4")
